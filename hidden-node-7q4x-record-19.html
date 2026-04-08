@@ -35,7 +35,8 @@
       border-right: 2px solid #404040;
       border-bottom: 2px solid #404040;
       box-shadow: 2px 2px 0 #000000;
-      user-select: none;
+      user-select: auto;
+      -webkit-user-select: auto;
     }
 
     .titlebar {
@@ -50,6 +51,9 @@
       font-size: 13px;
       font-weight: bold;
       cursor: move;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
     }
 
     .title-left {
@@ -100,6 +104,8 @@
       font-size: 11px;
       box-sizing: border-box;
       cursor: default;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .menubar {
@@ -112,6 +118,8 @@
       display: flex;
       gap: 18px;
       box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .content {
@@ -139,6 +147,8 @@
       display: block;
       image-rendering: auto;
       pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .binary-box {
@@ -154,6 +164,10 @@
       font-size: 14px;
       line-height: 1.5;
       word-break: break-word;
+      user-select: text;
+      -webkit-user-select: text;
+      cursor: text;
+      touch-action: auto;
     }
 
     .statusbar {
@@ -166,6 +180,8 @@
       box-sizing: border-box;
       font-size: 12px;
       color: black;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .status-section {
@@ -254,6 +270,8 @@
     }
 
     function startDrag(e) {
+      if (e.target.closest(".title-btn")) return;
+
       const rect = win.getBoundingClientRect();
       isDragging = true;
       offsetX = getClientX(e) - rect.left;
@@ -297,6 +315,7 @@
     handle.addEventListener("touchstart", startDrag, { passive: true });
     document.addEventListener("touchmove", moveDrag, { passive: false });
     document.addEventListener("touchend", stopDrag);
+    document.addEventListener("touchcancel", stopDrag);
   </script>
 </body>
 </html>
