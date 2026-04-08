@@ -3,115 +3,286 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ARCHIVE RECORD</title>
+  <title>IMAGEVIEW.EXE</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background: #0a0f14;
-      color: #d8e1e8;
-      font-family: Arial, Helvetica, sans-serif;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #008080;
+      font-family: "Tahoma", "MS Sans Serif", sans-serif;
+      overflow: hidden;
+    }
+
+    .desktop {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background:
+        linear-gradient(to bottom, #008080 0%, #007878 100%);
+    }
+
+    .window {
+      width: min(900px, 92vw);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -54%);
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      box-shadow: 2px 2px 0 #000000;
+    }
+
+    .titlebar {
+      height: 30px;
+      background: linear-gradient(to right, #000080, #1084d0);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px 0 8px;
+      box-sizing: border-box;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .title-icon {
+      width: 16px;
+      height: 16px;
+      background: #c0c0c0;
+      color: black;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #404040;
+      border-bottom: 1px solid #404040;
+      line-height: 1;
+    }
+
+    .title-buttons {
+      display: flex;
+      gap: 2px;
+    }
+
+    .title-btn {
+      width: 18px;
+      height: 18px;
+      background: #c0c0c0;
+      color: black;
+      border-top: 1px solid #ffffff;
+      border-left: 1px solid #ffffff;
+      border-right: 1px solid #404040;
+      border-bottom: 1px solid #404040;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      box-sizing: border-box;
+    }
+
+    .menubar {
+      background: #c0c0c0;
+      border-top: 1px solid #dfdfdf;
+      border-bottom: 1px solid #808080;
+      padding: 4px 8px;
+      font-size: 12px;
+      color: black;
+      display: flex;
+      gap: 18px;
+      box-sizing: border-box;
+    }
+
+    .content {
+      padding: 14px;
+      background: #c0c0c0;
+    }
+
+    .image-panel {
+      background: black;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding: 12px;
       display: flex;
       justify-content: center;
-      padding: 40px 16px;
+      align-items: center;
+      min-height: 340px;
+      box-sizing: border-box;
     }
 
-    .panel {
-      width: 100%;
-      max-width: 760px;
-      background: #111820;
-      border: 1px solid #2c3a44;
-      box-shadow: 0 0 25px rgba(0,0,0,0.35);
-      padding: 28px;
-    }
-
-    .eyebrow {
-      color: #8fa3b1;
-      font-size: 12px;
-      letter-spacing: 2px;
-      margin-bottom: 12px;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0 0 18px 0;
-      font-size: 28px;
-      letter-spacing: 1px;
-    }
-
-    .flag {
-      display: inline-block;
-      margin-bottom: 22px;
-      padding: 6px 10px;
-      border: 1px solid #6a2c2c;
-      background: rgba(120, 20, 20, 0.18);
-      color: #ffb9b9;
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    img {
+    .image-panel img {
+      max-width: 100%;
+      max-height: 60vh;
       display: block;
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto 24px auto;
-      border: 1px solid #31414b;
+      image-rendering: auto;
     }
 
-    .meta {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 10px 16px;
-      margin-bottom: 24px;
+    .binary-box {
+      margin-top: 12px;
+      background: #ffffff;
+      color: #000000;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding: 10px 12px;
+      font-family: "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
     }
 
-    .label {
-      color: #8fa3b1;
-      text-transform: uppercase;
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 5px 6px;
+      background: #c0c0c0;
+      border-top: 1px solid #808080;
+      box-sizing: border-box;
       font-size: 12px;
-      letter-spacing: 1px;
+      color: black;
     }
 
-    .value {
-      color: #e8eef2;
+    .status-section {
+      flex: 1;
+      min-height: 20px;
+      display: flex;
+      align-items: center;
+      padding: 2px 6px;
+      background: #c0c0c0;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #ffffff;
+      border-bottom: 1px solid #ffffff;
+      box-sizing: border-box;
     }
 
-    .note {
-      border-top: 1px solid #2c3a44;
-      padding-top: 20px;
-      line-height: 1.6;
-      color: #c6d0d8;
+    .taskbar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 34px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      padding: 3px 4px;
+      box-sizing: border-box;
+      gap: 6px;
+    }
+
+    .start {
+      height: 26px;
+      padding: 0 10px;
+      background: #c0c0c0;
+      border-top: 2px solid #ffffff;
+      border-left: 2px solid #ffffff;
+      border-right: 2px solid #404040;
+      border-bottom: 2px solid #404040;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      color: black;
+    }
+
+    .task {
+      height: 24px;
+      min-width: 180px;
+      padding: 0 10px;
+      background: #c0c0c0;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      color: black;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 700px) {
+      .window {
+        width: 96vw;
+        transform: translate(-50%, -52%);
+      }
+
+      .image-panel {
+        min-height: 220px;
+      }
+
+      .binary-box {
+        font-size: 12px;
+      }
+
+      .task {
+        min-width: 120px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="panel">
-    <div class="eyebrow">ARCHIVE NODE // INTERNAL ACCESS</div>
-    <h1>MISSING PERSON RECORD</h1>
-    <div class="flag">STATUS: UNRESOLVED</div>
+  <div class="desktop">
+    <div class="window">
+      <div class="titlebar">
+        <div class="title-left">
+          <div class="title-icon">🖼</div>
+          <div>IMAGEVIEW.EXE - [recovered_image_04.jpg]</div>
+        </div>
+        <div class="title-buttons">
+          <div class="title-btn">_</div>
+          <div class="title-btn">□</div>
+          <div class="title-btn">×</div>
+        </div>
+      </div>
 
-    <img src="missing-person.jpg" alt="Missing person photo" />
+      <div class="menubar">
+        <div>File</div>
+        <div>Edit</div>
+        <div>View</div>
+        <div>Help</div>
+      </div>
 
-    <div class="meta">
-      <div class="label">Name</div>
-      <div class="value">Daniel Mercer</div>
+      <div class="content">
+        <div class="image-panel">
+          <img src="missing-person.jpg" alt="Recovered image">
+        </div>
 
-      <div class="label">Age</div>
-      <div class="value">34</div>
+        <div class="binary-box">
+          01001111 01110011 01101101 01100001 01110011 00100000 01101001 01110011 00100000 01110111 01100001 01110100 01100011 01101000 01101001 01101110 01100111
+        </div>
+      </div>
 
-      <div class="label">Last Seen</div>
-      <div class="value">North Access Road, Sector 4</div>
-
-      <div class="label">Date</div>
-      <div class="value">09/14/1997</div>
-
-      <div class="label">Case ID</div>
-      <div class="value">MP-04-1997-118</div>
+      <div class="statusbar">
+        <div class="status-section">Recovered file opened successfully.</div>
+        <div class="status-section">Format: JPG</div>
+        <div class="status-section">Access: Read Only</div>
+      </div>
     </div>
 
-    <div class="note">
-      Subject disappeared approximately 2.1 km from a restricted communications perimeter.
-      Witness statements conflict on weather conditions, departure time, and clothing description.
-      Final report remains incomplete.
+    <div class="taskbar">
+      <div class="start">Start</div>
+      <div class="task">IMAGEVIEW.EXE</div>
     </div>
   </div>
 </body>
