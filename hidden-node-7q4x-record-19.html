@@ -19,8 +19,8 @@
       width: 100%;
       height: 100%;
       position: relative;
-      background:
-        linear-gradient(to bottom, #008080 0%, #007878 100%);
+      background: linear-gradient(to bottom, #008080 0%, #007878 100%);
+      overflow: hidden;
     }
 
     .window {
@@ -28,13 +28,14 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -54%);
+      transform: translate(-50%, -50%);
       background: #c0c0c0;
       border-top: 2px solid #ffffff;
       border-left: 2px solid #ffffff;
       border-right: 2px solid #404040;
       border-bottom: 2px solid #404040;
       box-shadow: 2px 2px 0 #000000;
+      user-select: none;
     }
 
     .titlebar {
@@ -48,6 +49,7 @@
       box-sizing: border-box;
       font-size: 13px;
       font-weight: bold;
+      cursor: move;
     }
 
     .title-left {
@@ -57,6 +59,7 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+      min-width: 0;
     }
 
     .title-icon {
@@ -73,11 +76,13 @@
       border-right: 1px solid #404040;
       border-bottom: 1px solid #404040;
       line-height: 1;
+      flex-shrink: 0;
     }
 
     .title-buttons {
       display: flex;
       gap: 2px;
+      flex-shrink: 0;
     }
 
     .title-btn {
@@ -94,6 +99,7 @@
       justify-content: center;
       font-size: 11px;
       box-sizing: border-box;
+      cursor: default;
     }
 
     .menubar {
@@ -132,6 +138,7 @@
       max-height: 60vh;
       display: block;
       image-rendering: auto;
+      pointer-events: none;
     }
 
     .binary-box {
@@ -175,56 +182,9 @@
       box-sizing: border-box;
     }
 
-    .taskbar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 34px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      display: flex;
-      align-items: center;
-      padding: 3px 4px;
-      box-sizing: border-box;
-      gap: 6px;
-    }
-
-    .start {
-      height: 26px;
-      padding: 0 10px;
-      background: #c0c0c0;
-      border-top: 2px solid #ffffff;
-      border-left: 2px solid #ffffff;
-      border-right: 2px solid #404040;
-      border-bottom: 2px solid #404040;
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      font-size: 13px;
-      color: black;
-    }
-
-    .task {
-      height: 24px;
-      min-width: 180px;
-      padding: 0 10px;
-      background: #c0c0c0;
-      border-top: 2px solid #808080;
-      border-left: 2px solid #808080;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      display: flex;
-      align-items: center;
-      font-size: 12px;
-      color: black;
-      box-sizing: border-box;
-    }
-
     @media (max-width: 700px) {
       .window {
         width: 96vw;
-        transform: translate(-50%, -52%);
       }
 
       .image-panel {
@@ -234,17 +194,13 @@
       .binary-box {
         font-size: 12px;
       }
-
-      .task {
-        min-width: 120px;
-      }
     }
   </style>
 </head>
 <body>
   <div class="desktop">
-    <div class="window">
-      <div class="titlebar">
+    <div class="window" id="appWindow">
+      <div class="titlebar" id="dragHandle">
         <div class="title-left">
           <div class="title-icon">🖼</div>
           <div>IMAGEVIEW.EXE - [recovered_image_04.jpg]</div>
@@ -279,11 +235,68 @@
         <div class="status-section">Access: Read Only</div>
       </div>
     </div>
-
-    <div class="taskbar">
-      <div class="start">Start</div>
-      <div class="task">IMAGEVIEW.EXE</div>
-    </div>
   </div>
+
+  <script>
+    const win = document.getElementById("appWindow");
+    const handle = document.getElementById("dragHandle");
+
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+
+    function getClientX(e) {
+      return e.touches ? e.touches[0].clientX : e.clientX;
+    }
+
+    function getClientY(e) {
+      return e.touches ? e.touches[0].clientY : e.clientY;
+    }
+
+    function startDrag(e) {
+      const rect = win.getBoundingClientRect();
+      isDragging = true;
+      offsetX = getClientX(e) - rect.left;
+      offsetY = getClientY(e) - rect.top;
+
+      win.style.transform = "none";
+      win.style.left = rect.left + "px";
+      win.style.top = rect.top + "px";
+    }
+
+    function moveDrag(e) {
+      if (!isDragging) return;
+
+      e.preventDefault();
+
+      const desktop = document.querySelector(".desktop");
+      const desktopRect = desktop.getBoundingClientRect();
+      const winRect = win.getBoundingClientRect();
+
+      let newLeft = getClientX(e) - offsetX;
+      let newTop = getClientY(e) - offsetY;
+
+      const maxLeft = desktopRect.width - winRect.width;
+      const maxTop = desktopRect.height - winRect.height;
+
+      newLeft = Math.max(0, Math.min(newLeft, maxLeft));
+      newTop = Math.max(0, Math.min(newTop, maxTop));
+
+      win.style.left = newLeft + "px";
+      win.style.top = newTop + "px";
+    }
+
+    function stopDrag() {
+      isDragging = false;
+    }
+
+    handle.addEventListener("mousedown", startDrag);
+    document.addEventListener("mousemove", moveDrag);
+    document.addEventListener("mouseup", stopDrag);
+
+    handle.addEventListener("touchstart", startDrag, { passive: true });
+    document.addEventListener("touchmove", moveDrag, { passive: false });
+    document.addEventListener("touchend", stopDrag);
+  </script>
 </body>
 </html>
