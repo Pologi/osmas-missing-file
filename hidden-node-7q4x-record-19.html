@@ -9,26 +9,29 @@
       margin: 0;
       padding: 0;
       width: 100%;
-      height: 100%;
+      min-height: 100%;
       background: #008080;
       font-family: "Tahoma", "MS Sans Serif", sans-serif;
-      overflow: hidden;
+    }
+
+    body {
+      overflow: auto;
     }
 
     .desktop {
       width: 100%;
-      height: 100%;
+      min-height: 100vh;
       position: relative;
       background: linear-gradient(to bottom, #008080 0%, #007878 100%);
       overflow: hidden;
+      padding: 24px;
+      box-sizing: border-box;
     }
 
     .window {
       width: min(900px, 92vw);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
+      margin: 0 auto;
       background: #c0c0c0;
       border-top: 2px solid #ffffff;
       border-left: 2px solid #ffffff;
@@ -37,6 +40,16 @@
       box-shadow: 2px 2px 0 #000000;
       user-select: auto;
       -webkit-user-select: auto;
+    }
+
+    @media (min-width: 701px) {
+      .window {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        transform: translate(-50%, -50%);
+      }
     }
 
     .titlebar {
@@ -127,6 +140,21 @@
       background: #c0c0c0;
     }
 
+    .system-line {
+      background: #ffffff;
+      color: #000000;
+      border-top: 2px solid #808080;
+      border-left: 2px solid #808080;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+    }
+
     .image-panel {
       background: black;
       border-top: 2px solid #808080;
@@ -151,8 +179,20 @@
       -webkit-user-select: none;
     }
 
-    .binary-box {
+    .binary-label {
       margin-top: 12px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: black;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .binary-box {
+      width: 100%;
+      min-height: 92px;
+      resize: none;
+      margin: 0;
       background: #ffffff;
       color: #000000;
       border-top: 2px solid #808080;
@@ -168,6 +208,7 @@
       -webkit-user-select: text;
       cursor: text;
       touch-action: auto;
+      box-sizing: border-box;
     }
 
     .statusbar {
@@ -196,11 +237,23 @@
       border-right: 1px solid #ffffff;
       border-bottom: 1px solid #ffffff;
       box-sizing: border-box;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     @media (max-width: 700px) {
+      .desktop {
+        padding: 10px;
+        overflow: auto;
+      }
+
       .window {
         width: 96vw;
+      }
+
+      .titlebar {
+        cursor: default;
       }
 
       .image-panel {
@@ -209,6 +262,12 @@
 
       .binary-box {
         font-size: 12px;
+        min-height: 120px;
+      }
+
+      .statusbar {
+        flex-direction: column;
+        gap: 4px;
       }
     }
   </style>
@@ -218,7 +277,7 @@
     <div class="window" id="appWindow">
       <div class="titlebar" id="dragHandle">
         <div class="title-left">
-          <div class="title-icon">🖼</div>
+          <div class="title-icon">▣</div>
           <div>IMAGEVIEW.EXE - [recovered_image_04.jpg]</div>
         </div>
         <div class="title-buttons">
@@ -236,15 +295,21 @@
       </div>
 
       <div class="content">
+        <div class="system-line">[OSMAS_RECOVERY]
+SOURCE: UNVERIFIED
+CHECKSUM: FAILED
+TEXT LAYER: PARTIAL</div>
+
         <div class="image-panel">
           <img src="missing-person.jpg" alt="Recovered image">
         </div>
 
+        <div class="binary-label">Recovered text layer:</div>
         <textarea class="binary-box" readonly>01001111 01110011 01101101 01100001 01110011 00100000 01101001 01110011 00100000 01110111 01100001 01110100 01100011 01101000 01101001 01101110 01100111</textarea>
       </div>
 
       <div class="statusbar">
-        <div class="status-section">Recovered file opened successfully.</div>
+        <div class="status-section">Recovered file opened.</div>
         <div class="status-section">Format: JPG</div>
         <div class="status-section">Access: Read Only</div>
       </div>
@@ -259,6 +324,10 @@
     let offsetX = 0;
     let offsetY = 0;
 
+    function isMobileLayout() {
+      return window.innerWidth <= 700;
+    }
+
     function getClientX(e) {
       return e.touches ? e.touches[0].clientX : e.clientX;
     }
@@ -268,6 +337,7 @@
     }
 
     function startDrag(e) {
+      if (isMobileLayout()) return;
       if (e.target.closest(".title-btn")) return;
 
       const rect = win.getBoundingClientRect();
